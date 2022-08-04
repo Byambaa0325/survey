@@ -312,26 +312,29 @@
         this.$refs.flowform.submitted = true
 
         this.submitted = true
+        
 
         /* eslint-disable-next-line no-unused-vars */
         const data = this.getData()
-        /*
-          You can use Fetch API to send the data to your server, eg.:
-
-          fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          })
-        */
+        console.log(JSON.stringify(data))
+        fetch(process.env.VUE_APP_SEND_URL, {
+          method: 'POST',
+          mode:'no-cors',
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            "X-Api-Key": process.env.VUE_APP_SEND_API_KEY,
+          },
+          body: JSON.stringify(data)
+        })
+        
       },
 
       getData() {
         const data = {
           questions: [],
-          answers: []
+          answers: [],
+          dictionary : null
         }
 
         this.questions.forEach(question => {
@@ -345,8 +348,12 @@
             data.answers.push(answer)
           }
         })
+        let a = data.questions
+        let b = data.answers
+        data.dictionary = {}
+        a.forEach((key, i) => data.dictionary[key] = b[i]);
 
-        return data
+        return data.dictionary
       }
     }
   }
